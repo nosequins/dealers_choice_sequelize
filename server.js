@@ -2,11 +2,14 @@ const express = require('express');
 const app = express();
 const {db,seed, Characters, Group } = require('./db');
 
-app.use('/southpark', require('./router'));
+app.use('/api/southpark', require('./router'));
 app.use(express.static(__dirname + '/public'));
+app.get('/ageGroups', (req,res)=>
+    res.sendFile(__dirname + './ageGroups')
+)
 app.get('/',async(req,res)=>{
     try{
-        res.redirect('/southpark');
+        res.redirect('/api/southpark');
     }catch(err){
         res.sendStatus(500);
     }

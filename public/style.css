@@ -6,3 +6,8 @@ html{
 a{
   color: black;  
 }
+.ages{
+  display: flex;
+  flex-direction:row;
+  justify-content: space-around;
+}

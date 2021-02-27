@@ -2,7 +2,6 @@ const express = require('express');
 const router= express.Router();
 const {db,Group, seed,Characters} = require('./db');
 
-
 router.get('/', async(req,res)=>{
     try{
         const characters= await Characters.findAll()
@@ -31,7 +30,41 @@ router.get('/', async(req,res)=>{
         console.log(err)
     }
 })
+router.get('/groups', async(req, res)=>{
+    try{
+        const characters= await Characters.findAll();
+        
+        res.send(`<html>
+        <head>
+            <link rel="stylesheet" href="/style.css" />
+            <title>Groups</title>
+        </head>
+        <body>
+            <div class='ages'>
+                <div class='agegroup'>
+                    <h1>Adults</h1>
+                    <ul class='oldies'>
+                    ${characters.filter(character=>character.groupId === 1).map(
+                        (person)=>(`<li>${person.firstName} ${person.lastName}</li>`)
+                    ).join('')}
+                    </ul>
+                </div>
+                <div class='agegroup'>
+                    <h1>Children</h1>
+                    <ul class='youngins'>
+                    ${characters.filter(character=>character.groupId === 2).map(
+                        (person)=>(`<li>${person.firstName} ${person.lastName}</li>`)
+                    ).join('')}
+                    </ul>
+                </div>
+            </div>
+        </body>  
+    </html>`)
 
+    }catch(err){
+        console.log(err)
+    }
+});
 
 router.get('/:id',  async(req,res)=>{
     try{ const charName= await Characters.findByPk(req.params.id);
@@ -77,20 +110,7 @@ router.get('/:id',  async(req,res)=>{
 
 
 
-router.get('/groups', async(req, res)=>{
-    try{
-        const ht= await Characters.findAll();
-        
-        res.send(`<html>
-        <head>
-            <h1>heher</h1>
-            </head>
-        </html>`)
-    }catch(err){
-        console.log(err)
-    }
-});
-router.get('/try', async(req,res)=>{
-    res.send(`<html><head></head></html>`)
-})
+
+
+
 module.exports= router
