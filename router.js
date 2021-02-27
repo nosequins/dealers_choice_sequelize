@@ -1,6 +1,6 @@
 const express = require('express');
 const router= express.Router();
-const {db,seed, Characters, Group } = require('./db');
+const {db,Group, seed,Characters} = require('./db');
 
 
 router.get('/', async(req,res)=>{
@@ -74,4 +74,23 @@ router.get('/:id',  async(req,res)=>{
     }
 
 } )
+
+
+
+router.get('/groups', async(req, res)=>{
+    try{
+        const ht= await Characters.findAll();
+        
+        res.send(`<html>
+        <head>
+            <h1>heher</h1>
+            </head>
+        </html>`)
+    }catch(err){
+        console.log(err)
+    }
+});
+router.get('/try', async(req,res)=>{
+    res.send(`<html><head></head></html>`)
+})
 module.exports= router
