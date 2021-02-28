@@ -1,13 +1,7 @@
 const express = require('express');
 const app = express();
 const {db,seed, Characters, Group } = require('./db');
-const { Pool } = require('pg');
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+
 
 app.use('/southpark', require('./router'));
 app.use(express.static(__dirname + '/public'));
