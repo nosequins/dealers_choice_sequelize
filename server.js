@@ -1,15 +1,19 @@
 const express = require('express');
 const app = express();
 const {db,seed, Characters, Group } = require('./db');
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
-app.use('/api/southpark', require('./router'));
+app.use('/southpark', require('./router'));
 app.use(express.static(__dirname + '/public'));
-app.get('/ageGroups', (req,res)=>
-    res.sendFile(__dirname + './ageGroups')
-)
 app.get('/',async(req,res)=>{
     try{
-        res.redirect('/api/southpark');
+        res.redirect('/southpark');
     }catch(err){
         res.sendStatus(500);
     }
