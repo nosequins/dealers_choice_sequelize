@@ -1,11 +1,12 @@
 const express = require('express');
-const router= express.Router();
+const router = express.Router();
+//you dont use db and seed in this file so you dont need to import them into the file
 const {db,Group, seed,Characters} = require('./db');
 
 router.get('/', async(req,res)=>{
     try{
         const characters= await Characters.findAll()
-        
+
         res.send(
             `<html>
                 <head>
@@ -17,7 +18,7 @@ router.get('/', async(req,res)=>{
                     <div class='charcters'>
                     <ul>
                     ${characters.map(person=>
-                        
+
                         `<li> &#10024 <a href='/southpark/${person.id}'>${person.firstName} ${person.lastName}</a> &#10024 </li>`
 
                     ).join('')}
@@ -33,7 +34,7 @@ router.get('/', async(req,res)=>{
 router.get('/groups', async(req, res)=>{
     try{
         const characters= await Characters.findAll();
-        
+
         res.send(`<html>
         <head>
             <link rel="stylesheet" href="/style.css" />
@@ -58,7 +59,7 @@ router.get('/groups', async(req, res)=>{
                     </ul>
                 </div>
             </div>
-        </body>  
+        </body>
     </html>`)
 
     }catch(err){
@@ -69,12 +70,29 @@ router.get('/groups', async(req, res)=>{
 router.get('/:id',  async(req,res)=>{
     try{ const charName= await Characters.findByPk(req.params.id);
          const related= await(Characters.findByPk(charName.relatedId))
-         const group =await Group.findByPk(charName.groupId)
+        const group = await Group.findByPk(charName.groupId)
+        /*instead of getting these separately
+        you could use an include in the query, so something like
+            Characters.findByPk(req.params.id, {
+                include: [
+                    {
+                        model: Characters,
+                        as: 'related'
+                    },
+                    {
+                        model: Group,
+                        as: 'group'
+                    },
+                ]
+            })
+        would give you the same information, with the group and other character as nested objects
+        see: https://sequelize.org/master/manual/eager-loading.html
+        */
         res.send(`<html>
             <head>
                 <link rel="stylesheet" href="/style.css" />
                 <title>${charName.firstName} ${charName.lastName}</title>
-                
+
             </head>
             <body>
                 <div class= 'characterName'>
@@ -82,20 +100,20 @@ router.get('/:id',  async(req,res)=>{
                     <ul class='details'>
                         <li>Id: ${req.params.id}</li>
                         <li>Type: ${group.type}</li>
-                        
+
                     </ul>
                 </div>
             </body>
             <script>
-            
+
             if(${charName.groupId} === 2 ){
-                
-                const li = document.createElement('li'); 
+
+                const li = document.createElement('li');
                 li.innerHTML = 'Parent: ${related.firstName} ${related.lastName}';
                 document.querySelector('.details').appendChild(li)
             }else{
-                
-                const li = document.createElement('li'); 
+
+                const li = document.createElement('li');
                 li.innerHTML = 'Child: ${related.firstName} ${related.lastName}';
                 document.querySelector('.details').appendChild(li)
             }

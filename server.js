@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+//dont need to import db, Characters and Group if you dont use them in the file
 const {db,seed, Characters, Group } = require('./db');
 
 
